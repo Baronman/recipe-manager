@@ -1,6 +1,10 @@
+
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+//import { scaleIngredients } from "../lib/scale";
+import type { IngredientRow } from "../types";
+import { ui } from "../ui/ui";
 
 type Recipe = {
   id: string;
@@ -13,6 +17,9 @@ type Recipe = {
   cook_time_minutes: number;
   servings: number;
   created_at: string;
+  ingredients_json: IngredientRow[];
+base_servings: number;
+
 };
 
 export default function RecipeDetailPage() {

@@ -11,6 +11,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --card-bg: #f9f9f9;
+  --card-text: #111;
 }
 
 a {
@@ -53,7 +55,10 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-
+[data-theme="dark"] {
+  --card-bg: #1f1f1f;
+  --card-text: #eee;
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
