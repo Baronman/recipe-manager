@@ -1,21 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-
-type Recipe = {
-  id: string;
-  title: string;
-  description: string | null;
-  tags: string[];
-  created_at: string;
-};
+import { ui } from "../ui/ui";
+import type { Recipe } from "../types";
 
 export default function RecipeListPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // UI state
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
 
@@ -25,7 +18,7 @@ export default function RecipeListPage() {
 
     const { data, error } = await supabase
       .from("recipes")
-      .select("id, title, description, tags, created_at")
+      .select("*")
       .order("created_at", { ascending: false });
 
     if (error) setError(error.message);
@@ -38,7 +31,6 @@ export default function RecipeListPage() {
     loadRecipes();
   }, []);
 
-  // all unique tags for dropdown
   const allTags = useMemo(() => {
     const set = new Set<string>();
     for (const r of recipes) {
@@ -47,7 +39,6 @@ export default function RecipeListPage() {
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }, [recipes]);
 
-  // apply search + tag filter locally (fast + simple)
   const filteredRecipes = useMemo(() => {
     const q = search.trim().toLowerCase();
 
@@ -64,32 +55,27 @@ export default function RecipeListPage() {
   }, [recipes, search, selectedTag]);
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: 24 }}>
+    <div style={ui.page}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h1>Recipe Manager</h1>
-        <Link to="/recipes/new">+ New Recipe</Link>
+        <Link to="/recipes/new" style={ui.button}>
+          + New Recipe
+        </Link>
       </div>
 
       {/* Filters */}
-      <div
-        style={{
-          display: "flex",
-          gap: 12,
-          marginBottom: 16,
-          alignItems: "center",
-        }}
-      >
+      <div style={{ display: "flex", gap: 12, marginTop: 16, marginBottom: 16 }}>
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search recipes..."
-          style={{ flex: 1, padding: 8 }}
+          style={ui.input}
         />
 
         <select
           value={selectedTag}
           onChange={(e) => setSelectedTag(e.target.value)}
-          style={{ padding: 8 }}
+          style={ui.input}
         >
           <option value="">All tags</option>
           {allTags.map((t) => (
@@ -100,6 +86,8 @@ export default function RecipeListPage() {
         </select>
 
         <button
+          type="button"
+          style={ui.buttonSecondary}
           onClick={() => {
             setSearch("");
             setSelectedTag("");
@@ -111,21 +99,37 @@ export default function RecipeListPage() {
 
       {loading && <p>Loading…</p>}
       {error && <p style={{ color: "crimson" }}>Error: {error}</p>}
-
       {!loading && !error && filteredRecipes.length === 0 && (
         <p>No recipes match your filters.</p>
       )}
 
-      <ul style={{ paddingLeft: 16 }}>
+      <ul style={{ padding: 0, listStyle: "none", display: "grid", gap: 16 }}>
         {filteredRecipes.map((r) => (
-          <li key={r.id} style={{ marginBottom: 12 }}>
-            <strong>
-              <Link to={`/recipes/${r.id}`}>{r.title}</Link>
-            </strong>
-
-            {r.description ? <div>{r.description}</div> : null}
-
-            <small>Tags: {r.tags?.length ? r.tags.join(", ") : "none"}</small>
+          <li key={r.id}>
+            <Link
+              to={`/recipes/${r.id}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div
+                style={ui.card}
+                onMouseEnter={(e) => {
+                  Object.assign((e.currentTarget as HTMLDivElement).style, ui.cardHover);
+                }}
+                onMouseLeave={(e) => {
+                  Object.assign((e.currentTarget as HTMLDivElement).style, ui.card);
+                }}
+              >
+                <strong style={{ fontSize: 18 }}>{r.title}</strong>
+                {r.description && (
+  <div style={{ marginTop: 8, fontSize: 18, fontWeight: 600, color: "#111" }}>
+    {r.description}
+  </div>
+)}
+                <small style={{ display: "block", marginTop: 8, color: "#555" }}>
+                  Tags: {r.tags?.length ? r.tags.join(", ") : "none"}
+                </small>
+              </div>
+            </Link>
           </li>
         ))}
       </ul>

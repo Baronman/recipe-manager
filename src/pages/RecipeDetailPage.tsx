@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 //import { scaleIngredients } from "../lib/scale";
 import type { IngredientRow } from "../types";
-import { ui } from "../ui/ui";
+//import { ui } from "../ui/ui";
 
 type Recipe = {
   id: string;
