@@ -5,16 +5,20 @@ export const ui = {
     padding: 24,
     fontFamily:
       'system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
+    color: "#111",
   },
- card: {
-  border: "1px solid #e6e6e6",
-  borderRadius: 12,
-  padding: 16,
-  background: "var(--card-bg, #f9f9f9)",
-  color: "var(--card-text, #111)",
-},
-
-
+  card: {
+    border: "1px solid #e6e6e6",
+    borderRadius: 12,
+    padding: 16,
+    background: "#fff",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+    transition: "transform 0.1s, box-shadow 0.1s",
+  },
+  cardHover: {
+    transform: "translateY(-2px)",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+  },
   row: {
     display: "flex",
     gap: 12,
@@ -62,4 +66,13 @@ export const ui = {
     color: "#666",
     fontWeight: 500,
   },
+    cardStyle: {
+    border: "1px solid #e6e6e6",
+    borderRadius: 12,
+    padding: 16,
+    background: "#fff",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+    color: "#111",
+    marginTop: 16,
+  }
 };
